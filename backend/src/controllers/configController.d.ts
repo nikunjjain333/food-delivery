@@ -1,0 +1,4 @@
+import { Request, Response } from 'express';
+export declare const getConfigs: (req: Request, res: Response) => Promise<void>;
+export declare const updateConfig: (req: Request, res: Response) => Promise<void>;
+//# sourceMappingURL=configController.d.ts.map

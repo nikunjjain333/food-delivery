@@ -1,0 +1,132 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id              String   @id @default(uuid())
+  email           String   @unique
+  password        String
+  name            String
+  role            Role     @default(CUSTOMER)
+  address         String?  // Optional default address
+  defaultStoreId  String?  // Customer's preferred store
+  defaultStore    Store?   @relation("CustomerDefaultStore", fields: [defaultStoreId], references: [id])
+  orders          Order[]
+  reviews         Review[]
+  ownedStores     Store[]  @relation("MerchantStores")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Sweet {
+  id          String        @id @default(uuid())
+  name        String
+  description String?
+  price       Float         // Base price
+  imageUrl    String?
+  isAvailable Boolean       @default(true)
+  stock       Int           @default(0)
+  category    String?       // Product category
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  OrderItem   OrderItem[]
+  storeSweets StoreSweets[] // Store-specific pricing and availability
+}
+
+model Order {
+  id              String      @id @default(uuid())
+  user            User        @relation(fields: [userId], references: [id])
+  userId          String
+  store           Store       @relation(fields: [storeId], references: [id])
+  storeId         String
+  items           OrderItem[]
+  totalAmount     Float
+  status          OrderStatus @default(PENDING)
+  paymentMethod   String
+  paymentStatus   String      @default("UNPAID")
+  deliveryAddress String      // Address for this specific order
+  review          Review?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  rating    Int      // 1 to 5
+  comment   String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  orderId   String   @unique
+  order     Order    @relation(fields: [orderId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model OrderItem {
+  id       String  @id @default(uuid())
+  order    Order   @relation(fields: [orderId], references: [id])
+  orderId  String
+  sweet    Sweet   @relation(fields: [sweetId], references: [id])
+  sweetId  String
+  quantity Int
+  price    Float
+}
+
+model Store {
+  id              String        @id @default(uuid())
+  name            String
+  address         String
+  phone           String?
+  email           String?
+  latitude        Float?
+  longitude       Float?
+  isActive        Boolean       @default(true)
+  operatingHours  Json?         // Store operating hours as JSON
+  deliveryRadius  Float         @default(5.0) // Delivery radius in kilometers
+  merchantId      String
+  merchant        User          @relation("MerchantStores", fields: [merchantId], references: [id])
+  orders          Order[]
+  storeSweets     StoreSweets[]
+  defaultCustomers User[]       @relation("CustomerDefaultStore")
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model StoreSweets {
+  id          String   @id @default(uuid())
+  store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  storeId     String
+  sweet       Sweet    @relation(fields: [sweetId], references: [id], onDelete: Cascade)
+  sweetId     String
+  price       Float?   // Store-specific price (overrides base price if set)
+  stock       Int      @default(0)
+  isAvailable Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([storeId, sweetId]) // One entry per store-sweet combination
+}
+
+model MerchantConfig {
+  id               String  @id @default(uuid())
+  key              String  @unique // e.g., "PAYMENT_METHOD_UPI", "PAYMENT_METHOD_COD"
+  value            Boolean @default(true) // true if enabled, false if disabled
+  description      String?
+  updatedAt        DateTime @updatedAt
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  ACCEPTED
+  DISPATCHED
+  DELIVERED
+  CANCELLED
+}

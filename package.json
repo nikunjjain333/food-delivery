@@ -1,0 +1,27 @@
+{
+  "name": "food-delivery",
+  "version": "1.0.0",
+  "description": "Food delivery platform with customer and merchant apps",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:customer\" \"npm run dev:merchant\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:customer": "cd customer_frontend && npm start",
+    "dev:merchant": "cd merchant_frontend && npm start",
+    "dev:web": "concurrently \"npm run dev:backend\" \"npm run web:customer\" \"npm run web:merchant\"",
+    "web:customer": "cd customer_frontend && npm run web",
+    "web:merchant": "cd merchant_frontend && npm run web",
+    "install:all": "npm install && cd backend && npm install && cd ../customer_frontend && npm install && cd ../merchant_frontend && npm install",
+    "backend": "cd backend && npm start",
+    "customer": "cd customer_frontend && npm start",
+    "merchant": "cd merchant_frontend && npm start"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "workspaces": [
+    "backend",
+    "customer_frontend",
+    "merchant_frontend",
+    "shared"
+  ]
+}
