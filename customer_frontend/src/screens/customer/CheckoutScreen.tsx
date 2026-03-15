@@ -5,6 +5,7 @@ import { useMerchantStore } from '../../store/useMerchantStore';
 import { useOrdersStore } from '../../store/useOrdersStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import { MapPin, CreditCard, Wallet, Banknote, CheckCircle, ArrowLeft, Edit2 } from 'lucide-react-native';
+import { commonStyles, colors } from '../../utils/styles';
 
 export default function CheckoutScreen({ navigation }: any) {
   const { items, getCartTotal, clearCart } = useCartStore();
@@ -67,19 +68,19 @@ export default function CheckoutScreen({ navigation }: any) {
   ].filter(method => method.enabled);
 
   return (
-    <SafeAreaView className="flex-1 bg-zinc-950">
-      <View className="px-6 py-4 flex-row items-center border-b border-zinc-900">
-        <TouchableOpacity onPress={() => navigation.goBack()} className="p-2 -ml-2">
-          <ArrowLeft color="#71717a" size={24} />
+    <SafeAreaView style={commonStyles.container}>
+      <View style={{ paddingHorizontal: 24, paddingVertical: 16, flexDirection: 'row', alignItems: 'center', borderBottomWidth: 1, borderBottomColor: colors.surface }}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={{ padding: 8, marginLeft: -8 }}>
+          <ArrowLeft color={colors.textSecondary} size={24} />
         </TouchableOpacity>
-        <Text className="text-xl font-bold text-white ml-2">Checkout</Text>
+        <Text style={{ fontSize: 20, fontWeight: 'bold', color: colors.text, marginLeft: 8 }}>Checkout</Text>
       </View>
 
-      <ScrollView className="flex-1 px-6 pt-6 mb-24" showsVerticalScrollIndicator={false}>
-        <View className="flex-row justify-between items-center mb-4">
-          <Text className="text-lg font-bold text-zinc-100">Delivery Address</Text>
+      <ScrollView style={{ flex: 1, paddingHorizontal: 24, paddingTop: 24, marginBottom: 96 }} showsVerticalScrollIndicator={false}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+          <Text style={{ fontSize: 18, fontWeight: 'bold', color: colors.text }}>Delivery Address</Text>
           <TouchableOpacity onPress={() => setIsEditingAddress(!isEditingAddress)}>
-            <Text className="text-amber-500 font-bold">{isEditingAddress ? 'Save' : 'Change'}</Text>
+            <Text style={{ color: colors.primary, fontWeight: 'bold' }}>{isEditingAddress ? 'Save' : 'Change'}</Text>
           </TouchableOpacity>
         </View>
 
@@ -92,7 +93,7 @@ export default function CheckoutScreen({ navigation }: any) {
               multiline
               autoFocus
               placeholder="Enter delivery address"
-              placeholderTextColor="#71717a"
+              placeholderTextColor={colors.textSecondary}
             />
           </View>
         ) : (
@@ -101,13 +102,13 @@ export default function CheckoutScreen({ navigation }: any) {
             onPress={() => setIsEditingAddress(true)}
           >
             <View className="bg-amber-500/10 p-3 rounded-2xl mr-4">
-              <MapPin color="#f59e0b" size={24} />
+              <MapPin color={colors.primary} size={24} />
             </View>
             <View className="flex-1">
               <Text className="text-zinc-100 font-bold mb-1">Deliver to</Text>
               <Text className="text-zinc-500 text-sm overflow-hidden" numberOfLines={2}>{deliveryAddress}</Text>
             </View>
-            <Edit2 color="#71717a" size={18} />
+            <Edit2 color={colors.textSecondary} size={18} />
           </TouchableOpacity>
         )}
 
@@ -136,7 +137,7 @@ export default function CheckoutScreen({ navigation }: any) {
                       {method.label}
                     </Text>
                   </View>
-                  {isSelected && <CheckCircle color="#f59e0b" size={24} fill="#f59e0b1a" />}
+                  {isSelected && <CheckCircle color={colors.primary} size={24} fill="#f59e0b1a" />}
                 </TouchableOpacity>
               );
             })}
@@ -160,7 +161,7 @@ export default function CheckoutScreen({ navigation }: any) {
           disabled={!selectedPayment || loading}
         >
           {loading ? (
-            <ActivityIndicator color="#09090b" />
+            <ActivityIndicator color={colors.background} />
           ) : (
             <Text className={`${!selectedPayment ? 'text-zinc-500' : 'text-zinc-950'} font-black text-xl uppercase tracking-widest`}>
               Place Order

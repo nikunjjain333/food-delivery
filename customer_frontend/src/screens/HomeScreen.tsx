@@ -1,14 +1,15 @@
 import { View, Text, TouchableOpacity } from 'react-native';
+import { commonStyles, colors } from '../utils/styles';
 
 export default function HomeScreen({ navigation }: any) {
   return (
-    <View className="flex-1 items-center justify-center bg-zinc-900">
-      <Text className="text-3xl font-bold text-amber-500 mb-6">Rohit Sweets 🍬</Text>
-      <TouchableOpacity 
-        className="bg-amber-500 px-6 py-3 rounded-xl shadow-lg shadow-amber-500/30"
+    <View style={[commonStyles.centerContainer, { backgroundColor: colors.surface }]}>
+      <Text style={{ fontSize: 32, fontWeight: 'bold', color: colors.primary, marginBottom: 24 }}>Rohit Sweets 🍬</Text>
+      <TouchableOpacity
+        style={[commonStyles.button, { paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 }]}
         onPress={() => navigation.navigate('Login')}
       >
-        <Text className="text-zinc-900 font-bold text-lg">Continue to Login</Text>
+        <Text style={[commonStyles.buttonText, { color: colors.background, fontSize: 18 }]}>Continue to Login</Text>
       </TouchableOpacity>
     </View>
   );

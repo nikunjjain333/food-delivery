@@ -6,6 +6,7 @@ import { useSweetsStore, Sweet } from '../../store/useSweetsStore';
 import { useStoresStore } from '../../store/useStoresStore';
 import { Plus, LogOut, ShoppingBag, Search, Filter, MapPin, ChevronDown } from 'lucide-react-native';
 import { TextInput } from 'react-native';
+import { commonStyles, colors } from '../../utils/styles';
 
 export default function CustomerHomeScreen({ navigation }: any) {
   const { user, logout } = useAuthStore();

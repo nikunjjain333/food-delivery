@@ -3,6 +3,7 @@ import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, ActivityIndicat
 import { Plus, Edit2, Trash2, X, MapPin, Phone, Clock, ChevronDown, ChevronUp } from 'lucide-react-native';
 import { useMerchantStoresStore, CreateStoreData, UpdateStoreData } from '../../store/useMerchantStoresStore';
 import { Store } from '../../store/useStoresStore';
+import { commonStyles, colors } from '../../utils/styles';
 
 export default function StoresScreen() {
   const {
@@ -155,98 +156,110 @@ export default function StoresScreen() {
     const inventory = isSelected ? storeInventory : [];
 
     return (
-      <View key={store.id} className="bg-zinc-900 border border-zinc-800 rounded-3xl mb-4 overflow-hidden">
+      <View key={store.id} style={[commonStyles.card, { borderRadius: 24, marginBottom: 16, overflow: 'hidden' }]}>
         {/* Store Header */}
         <TouchableOpacity
           onPress={() => toggleStoreExpansion(store.id)}
-          className="p-6 flex-row justify-between items-center"
+          style={{ padding: 24, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
         >
-          <View className="flex-1 pr-4">
-            <View className="flex-row items-center justify-between mb-2">
-              <Text className="text-xl font-bold text-zinc-100">{store.name}</Text>
-              <View className={`px-2 py-1 rounded-full ${store.isActive ? 'bg-emerald-500/20' : 'bg-red-500/20'}`}>
-                <Text className={`text-xs font-bold ${store.isActive ? 'text-emerald-400' : 'text-red-400'}`}>
+          <View style={{ flex: 1, paddingRight: 16 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+              <Text style={{ fontSize: 20, fontWeight: 'bold', color: colors.text }}>{store.name}</Text>
+              <View style={[
+                { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 999 },
+                store.isActive ? { backgroundColor: 'rgba(16, 185, 129, 0.2)' } : { backgroundColor: 'rgba(239, 68, 68, 0.2)' }
+              ]}>
+                <Text style={[
+                  { fontSize: 12, fontWeight: 'bold' },
+                  store.isActive ? { color: '#10b981' } : { color: colors.error }
+                ]}>
                   {store.isActive ? 'ACTIVE' : 'INACTIVE'}
                 </Text>
               </View>
             </View>
 
-            <View className="flex-row items-center mb-1">
-              <MapPin size={14} color="#71717a" />
-              <Text className="text-zinc-400 ml-2 text-sm flex-1" numberOfLines={1}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
+              <MapPin size={14} color={colors.textSecondary} />
+              <Text style={{ color: colors.textSecondary, marginLeft: 8, fontSize: 14, flex: 1 }} numberOfLines={1}>
                 {store.address}
               </Text>
             </View>
 
             {store.phone && (
-              <View className="flex-row items-center mb-1">
-                <Phone size={14} color="#71717a" />
-                <Text className="text-zinc-400 ml-2 text-sm">{store.phone}</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
+                <Phone size={14} color={colors.textSecondary} />
+                <Text style={{ color: colors.textSecondary, marginLeft: 8, fontSize: 14 }}>{store.phone}</Text>
               </View>
             )}
 
-            <View className="flex-row items-center">
-              <Clock size={14} color="#f59e0b" />
-              <Text className="text-amber-500 ml-2 text-sm font-semibold">
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Clock size={14} color={colors.primary} />
+              <Text style={{ color: colors.primary, marginLeft: 8, fontSize: 14, fontWeight: '600' }}>
                 Radius: {store.deliveryRadius}km
               </Text>
               {store._count && (
-                <Text className="text-zinc-500 ml-4 text-sm">
+                <Text style={{ color: colors.textSecondary, marginLeft: 16, fontSize: 14 }}>
                   {store._count.storeSweets} items
                 </Text>
               )}
             </View>
           </View>
 
-          <View className="flex-row items-center">
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <TouchableOpacity
-              className="bg-zinc-800 p-2 rounded-xl mr-2"
+              style={{ backgroundColor: colors.border, padding: 8, borderRadius: 12, marginRight: 8 }}
               onPress={() => handleOpenModal(store)}
             >
-              <Edit2 color="#a1a1aa" size={16} />
+              <Edit2 color={colors.textSecondary} size={16} />
             </TouchableOpacity>
             <TouchableOpacity
-              className="bg-zinc-800 p-2 rounded-xl mr-2"
+              style={{ backgroundColor: colors.border, padding: 8, borderRadius: 12, marginRight: 8 }}
               onPress={() => handleDelete(store)}
             >
-              <Trash2 color="#ef4444" size={16} />
+              <Trash2 color={colors.error} size={16} />
             </TouchableOpacity>
             {isExpanded ? (
-              <ChevronUp size={20} color="#71717a" />
+              <ChevronUp size={20} color={colors.textSecondary} />
             ) : (
-              <ChevronDown size={20} color="#71717a" />
+              <ChevronDown size={20} color={colors.textSecondary} />
             )}
           </View>
         </TouchableOpacity>
 
         {/* Store Inventory (Expanded) */}
         {isExpanded && (
-          <View className="border-t border-zinc-800 p-6">
-            <Text className="text-lg font-bold text-amber-500 mb-4">Store Inventory</Text>
+          <View style={{ borderTopWidth: 1, borderTopColor: colors.border, padding: 24 }}>
+            <Text style={{ fontSize: 18, fontWeight: 'bold', color: colors.primary, marginBottom: 16 }}>Store Inventory</Text>
 
             {inventoryLoading ? (
-              <ActivityIndicator color="#f59e0b" size="small" />
+              <ActivityIndicator color={colors.primary} size="small" />
             ) : inventory.length === 0 ? (
-              <Text className="text-zinc-500 italic">No items in this store's inventory</Text>
+              <Text style={{ color: colors.textSecondary, fontStyle: 'italic' }}>No items in this store's inventory</Text>
             ) : (
               <View>
                 {inventory.slice(0, 3).map((item) => (
-                  <View key={item.id} className="flex-row justify-between items-center py-2 border-b border-zinc-800">
-                    <View className="flex-1">
-                      <Text className="text-zinc-200 font-semibold">{item.sweet.name}</Text>
-                      <Text className="text-zinc-500 text-sm">
+                  <View key={item.id} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: colors.border }}>
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ color: colors.text, fontWeight: '600' }}>{item.sweet.name}</Text>
+                      <Text style={{ color: colors.textSecondary, fontSize: 14 }}>
                         ₹{item.price || item.sweet.price} • Stock: {item.stock}
                       </Text>
                     </View>
-                    <View className={`px-2 py-1 rounded-full ${item.isAvailable ? 'bg-emerald-500/20' : 'bg-red-500/20'}`}>
-                      <Text className={`text-xs font-bold ${item.isAvailable ? 'text-emerald-400' : 'text-red-400'}`}>
+                    <View style={[
+                      { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 999 },
+                      item.isAvailable ? { backgroundColor: 'rgba(16, 185, 129, 0.2)' } : { backgroundColor: 'rgba(239, 68, 68, 0.2)' }
+                    ]}>
+                      <Text style={[
+                        { fontSize: 12, fontWeight: 'bold' },
+                        item.isAvailable ? { color: '#10b981' } : { color: colors.error }
+                      ]}>
                         {item.isAvailable ? 'Available' : 'Out of Stock'}
                       </Text>
                     </View>
                   </View>
                 ))}
                 {inventory.length > 3 && (
-                  <Text className="text-zinc-400 text-sm mt-2 italic">
+                  <Text style={{ color: colors.textSecondary, fontSize: 14, marginTop: 8, fontStyle: 'italic' }}>
                     +{inventory.length - 3} more items
                   </Text>
                 )}
@@ -259,49 +272,49 @@ export default function StoresScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-zinc-950">
+    <SafeAreaView style={commonStyles.container}>
       <ScrollView
-        className="flex-1 px-6 pt-6 mb-20"
+        style={{ flex: 1, paddingHorizontal: 24, paddingTop: 24, marginBottom: 80 }}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#f59e0b" />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />
         }
       >
-        <View className="flex-row justify-between items-center mb-2">
-          <Text className="text-3xl font-extrabold text-amber-500">My Stores</Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+          <Text style={{ fontSize: 30, fontWeight: '800', color: colors.primary }}>My Stores</Text>
           <TouchableOpacity
-            className="bg-amber-500 w-10 h-10 rounded-full items-center justify-center shadow-md shadow-amber-500/20"
+            style={{ backgroundColor: colors.primary, width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', shadowColor: colors.primary, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 3.84 }}
             activeOpacity={0.7}
             onPress={() => handleOpenModal()}
           >
-            <Plus color="#18181b" size={24} strokeWidth={3} />
+            <Plus color={colors.background} size={24} strokeWidth={3} />
           </TouchableOpacity>
         </View>
-        <Text className="text-zinc-400 mb-8">Manage your store locations and inventory</Text>
+        <Text style={{ color: colors.textSecondary, marginBottom: 32 }}>Manage your store locations and inventory</Text>
 
         {error && (
-          <View className="bg-red-500/10 border border-red-500/30 rounded-2xl p-4 mb-6">
-            <Text className="text-red-400 font-semibold">{error}</Text>
+          <View style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', borderWidth: 1, borderColor: 'rgba(239, 68, 68, 0.3)', borderRadius: 16, padding: 16, marginBottom: 24 }}>
+            <Text style={{ color: colors.error, fontWeight: '600' }}>{error}</Text>
           </View>
         )}
 
         {loading && merchantStores.length === 0 ? (
-          <ActivityIndicator color="#f59e0b" size="large" className="mt-10" />
+          <ActivityIndicator color={colors.primary} size="large" style={{ marginTop: 40 }} />
         ) : (
-          <View className="pb-10">
+          <View style={{ paddingBottom: 40 }}>
             {merchantStores.length === 0 ? (
-              <View className="items-center justify-center py-16">
-                <MapPin size={48} color="#71717a" />
-                <Text className="text-zinc-300 font-bold text-xl mt-4 text-center">
+              <View style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: 64 }}>
+                <MapPin size={48} color={colors.textSecondary} />
+                <Text style={{ color: colors.text, fontWeight: 'bold', fontSize: 20, marginTop: 16, textAlign: 'center' }}>
                   No Stores Yet
                 </Text>
-                <Text className="text-zinc-500 text-center mt-2 mb-6">
+                <Text style={{ color: colors.textSecondary, textAlign: 'center', marginTop: 8, marginBottom: 24 }}>
                   Create your first store to start managing your business locations
                 </Text>
                 <TouchableOpacity
                   onPress={() => handleOpenModal()}
-                  className="bg-amber-500 px-6 py-3 rounded-2xl"
+                  style={[commonStyles.button, { paddingHorizontal: 24, paddingVertical: 12, borderRadius: 16 }]}
                 >
-                  <Text className="text-zinc-950 font-bold">Create Store</Text>
+                  <Text style={[commonStyles.buttonText, { color: colors.background }]}>Create Store</Text>
                 </TouchableOpacity>
               </View>
             ) : (
@@ -318,35 +331,35 @@ export default function StoresScreen() {
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
-        <View className="flex-1 justify-end bg-black/60">
-          <View className="bg-zinc-900 rounded-t-[40px] p-8 pb-12 border-t border-zinc-800">
-            <View className="flex-row justify-between items-center mb-6">
-              <Text className="text-2xl font-black text-white">
+        <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0, 0, 0, 0.6)' }}>
+          <View style={{ backgroundColor: colors.surface, borderTopLeftRadius: 40, borderTopRightRadius: 40, padding: 32, paddingBottom: 48, borderTopWidth: 1, borderTopColor: colors.border }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+              <Text style={{ fontSize: 24, fontWeight: '900', color: colors.text }}>
                 {editingStore ? 'Edit Store' : 'Add New Store'}
               </Text>
-              <TouchableOpacity onPress={() => setModalVisible(false)} className="bg-zinc-800 p-2 rounded-full">
-                <X color="#a1a1aa" size={20} />
+              <TouchableOpacity onPress={() => setModalVisible(false)} style={{ backgroundColor: colors.border, padding: 8, borderRadius: 999 }}>
+                <X color={colors.textSecondary} size={20} />
               </TouchableOpacity>
             </View>
 
-            <ScrollView showsVerticalScrollIndicator={false} className="space-y-5">
-              <View>
-                <Text className="text-zinc-500 font-bold mb-2 ml-1 text-xs uppercase tracking-widest">Store Name</Text>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <View style={{ marginBottom: 20 }}>
+                <Text style={{ color: colors.textSecondary, fontWeight: 'bold', marginBottom: 8, marginLeft: 4, fontSize: 12, textTransform: 'uppercase', letterSpacing: 2 }}>Store Name</Text>
                 <TextInput
-                  className="bg-zinc-950 border border-zinc-800 text-white p-4 rounded-2xl mb-4"
+                  style={[commonStyles.input, { backgroundColor: colors.background, padding: 16, borderRadius: 16, marginBottom: 16 }]}
                   placeholder="e.g. Downtown Branch"
-                  placeholderTextColor="#3f3f46"
+                  placeholderTextColor={colors.border}
                   value={form.name}
                   onChangeText={(text) => setForm({...form, name: text})}
                 />
               </View>
 
-              <View>
-                <Text className="text-zinc-500 font-bold mb-2 ml-1 text-xs uppercase tracking-widest">Address</Text>
+              <View style={{ marginBottom: 16 }}>
+                <Text style={{ color: colors.textSecondary, fontWeight: 'bold', marginBottom: 8, marginLeft: 4, fontSize: 12, textTransform: 'uppercase', letterSpacing: 2 }}>Address</Text>
                 <TextInput
-                  className="bg-zinc-950 border border-zinc-800 text-white p-4 rounded-2xl mb-4"
+                  style={[commonStyles.input, { backgroundColor: colors.background, padding: 16, borderRadius: 16, marginBottom: 16 }]}
                   placeholder="Full store address"
-                  placeholderTextColor="#3f3f46"
+                  placeholderTextColor={colors.border}
                   multiline
                   numberOfLines={2}
                   value={form.address}
@@ -354,24 +367,24 @@ export default function StoresScreen() {
                 />
               </View>
 
-              <View className="flex-row justify-between mb-4">
-                <View className="w-[48%]">
-                  <Text className="text-zinc-500 font-bold mb-2 ml-1 text-xs uppercase tracking-widest">Phone</Text>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16 }}>
+                <View style={{ width: '48%' }}>
+                  <Text style={{ color: colors.textSecondary, fontWeight: 'bold', marginBottom: 8, marginLeft: 4, fontSize: 12, textTransform: 'uppercase', letterSpacing: 2 }}>Phone</Text>
                   <TextInput
-                    className="bg-zinc-950 border border-zinc-800 text-white p-4 rounded-2xl"
+                    style={[commonStyles.input, { backgroundColor: colors.background, padding: 16, borderRadius: 16 }]}
                     placeholder="+91 9876543210"
-                    placeholderTextColor="#3f3f46"
+                    placeholderTextColor={colors.border}
                     keyboardType="phone-pad"
                     value={form.phone}
                     onChangeText={(text) => setForm({...form, phone: text})}
                   />
                 </View>
-                <View className="w-[48%]">
-                  <Text className="text-zinc-500 font-bold mb-2 ml-1 text-xs uppercase tracking-widest">Email</Text>
+                <View style={{ width: '48%' }}>
+                  <Text style={{ color: colors.textSecondary, fontWeight: 'bold', marginBottom: 8, marginLeft: 4, fontSize: 12, textTransform: 'uppercase', letterSpacing: 2 }}>Email</Text>
                   <TextInput
-                    className="bg-zinc-950 border border-zinc-800 text-white p-4 rounded-2xl"
+                    style={[commonStyles.input, { backgroundColor: colors.background, padding: 16, borderRadius: 16 }]}
                     placeholder="store@email.com"
-                    placeholderTextColor="#3f3f46"
+                    placeholderTextColor={colors.border}
                     keyboardType="email-address"
                     value={form.email}
                     onChangeText={(text) => setForm({...form, email: text})}
@@ -379,35 +392,35 @@ export default function StoresScreen() {
                 </View>
               </View>
 
-              <View className="flex-row justify-between mb-4">
-                <View className="w-[30%]">
-                  <Text className="text-zinc-500 font-bold mb-2 ml-1 text-xs uppercase tracking-widest">Latitude</Text>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16 }}>
+                <View style={{ width: '30%' }}>
+                  <Text style={{ color: colors.textSecondary, fontWeight: 'bold', marginBottom: 8, marginLeft: 4, fontSize: 12, textTransform: 'uppercase', letterSpacing: 2 }}>Latitude</Text>
                   <TextInput
-                    className="bg-zinc-950 border border-zinc-800 text-white p-4 rounded-2xl"
+                    style={[commonStyles.input, { backgroundColor: colors.background, padding: 16, borderRadius: 16 }]}
                     placeholder="28.7041"
-                    placeholderTextColor="#3f3f46"
+                    placeholderTextColor={colors.border}
                     keyboardType="numeric"
                     value={form.latitude}
                     onChangeText={(text) => setForm({...form, latitude: text})}
                   />
                 </View>
-                <View className="w-[30%]">
-                  <Text className="text-zinc-500 font-bold mb-2 ml-1 text-xs uppercase tracking-widest">Longitude</Text>
+                <View style={{ width: '30%' }}>
+                  <Text style={{ color: colors.textSecondary, fontWeight: 'bold', marginBottom: 8, marginLeft: 4, fontSize: 12, textTransform: 'uppercase', letterSpacing: 2 }}>Longitude</Text>
                   <TextInput
-                    className="bg-zinc-950 border border-zinc-800 text-white p-4 rounded-2xl"
+                    style={[commonStyles.input, { backgroundColor: colors.background, padding: 16, borderRadius: 16 }]}
                     placeholder="77.1025"
-                    placeholderTextColor="#3f3f46"
+                    placeholderTextColor={colors.border}
                     keyboardType="numeric"
                     value={form.longitude}
                     onChangeText={(text) => setForm({...form, longitude: text})}
                   />
                 </View>
-                <View className="w-[30%]">
-                  <Text className="text-zinc-500 font-bold mb-2 ml-1 text-xs uppercase tracking-widest">Radius (km)</Text>
+                <View style={{ width: '30%' }}>
+                  <Text style={{ color: colors.textSecondary, fontWeight: 'bold', marginBottom: 8, marginLeft: 4, fontSize: 12, textTransform: 'uppercase', letterSpacing: 2 }}>Radius (km)</Text>
                   <TextInput
-                    className="bg-zinc-950 border border-zinc-800 text-white p-4 rounded-2xl"
+                    style={[commonStyles.input, { backgroundColor: colors.background, padding: 16, borderRadius: 16 }]}
                     placeholder="5"
-                    placeholderTextColor="#3f3f46"
+                    placeholderTextColor={colors.border}
                     keyboardType="numeric"
                     value={form.deliveryRadius}
                     onChangeText={(text) => setForm({...form, deliveryRadius: text})}
@@ -416,10 +429,13 @@ export default function StoresScreen() {
               </View>
 
               <TouchableOpacity
-                className="w-full bg-amber-500 py-5 rounded-2xl items-center shadow-xl shadow-amber-500/20 mt-8"
+                style={[
+                  commonStyles.button,
+                  { width: '100%', paddingVertical: 20, borderRadius: 16, shadowColor: colors.primary, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.2, shadowRadius: 3.84, marginTop: 32 }
+                ]}
                 onPress={handleSubmit}
               >
-                <Text className="text-zinc-900 font-black text-lg uppercase tracking-widest">
+                <Text style={{ color: colors.background, fontWeight: '900', fontSize: 18, textTransform: 'uppercase', letterSpacing: 2 }}>
                   {editingStore ? 'Update Store' : 'Create Store'}
                 </Text>
               </TouchableOpacity>

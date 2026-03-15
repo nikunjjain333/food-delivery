@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, TextInput, Alert, ScrollView, ActivityInd
 import { useAuthStore } from '../store/useAuthStore';
 import { User, Mail, Shield, LogOut, Save, Edit2, Store, ChevronLeft, MapPin, ClipboardList } from 'lucide-react-native';
 import api from '../api/client';
+import { commonStyles, colors } from '../utils/styles';
 
 export default function ProfileScreen({ navigation }: any) {
   const { user, logout } = useAuthStore();
@@ -121,7 +122,7 @@ export default function ProfileScreen({ navigation }: any) {
   };
 
   const getRoleBadgeColor = () => {
-    return user?.role === 'ADMIN' ? 'bg-purple-500' : 'bg-amber-500';
+    return user?.role === 'ADMIN' ? '#8b5cf6' : colors.primary;
   };
 
   const getRoleIcon = () => {
@@ -129,104 +130,108 @@ export default function ProfileScreen({ navigation }: any) {
   };
 
   return (
-    <ScrollView className="flex-1 bg-zinc-950">
-      <View className="px-6 pt-12 pb-6">
+    <ScrollView style={commonStyles.container}>
+      <View style={{ paddingHorizontal: 24, paddingTop: 48, paddingBottom: 24 }}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
-          className="mb-6"
+          style={{ marginBottom: 24 }}
         >
-          <ChevronLeft color="#71717a" size={32} />
+          <ChevronLeft color={colors.textSecondary} size={32} />
         </TouchableOpacity>
 
-        <Text className="text-4xl font-extrabold text-amber-500 mb-2">Profile</Text>
-        <Text className="text-zinc-400 mb-8 text-lg">Manage your account</Text>
+        <Text style={{ fontSize: 36, fontWeight: '800', color: colors.primary, marginBottom: 8 }}>Profile</Text>
+        <Text style={{ color: colors.textSecondary, marginBottom: 32, fontSize: 18 }}>Manage your account</Text>
 
         {/* User Avatar and Role */}
-        <View className="items-center mb-8">
-          <View className="w-32 h-32 bg-zinc-900 rounded-full items-center justify-center mb-4 border-4 border-zinc-800">
-            <User color="#f59e0b" size={64} />
+        <View style={{ alignItems: 'center', marginBottom: 32 }}>
+          <View style={{ width: 128, height: 128, backgroundColor: colors.surface, borderRadius: 64, alignItems: 'center', justifyContent: 'center', marginBottom: 16, borderWidth: 4, borderColor: colors.border }}>
+            <User color={colors.primary} size={64} />
           </View>
-          <View className={`px-4 py-2 rounded-full ${getRoleBadgeColor()} flex-row items-center`}>
+          <View style={{ paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, backgroundColor: getRoleBadgeColor(), flexDirection: 'row', alignItems: 'center' }}>
             {getRoleIcon()}
-            <Text className="text-white font-bold ml-2 uppercase text-xs tracking-wider">
+            <Text style={{ color: 'white', fontWeight: 'bold', marginLeft: 8, textTransform: 'uppercase', fontSize: 12, letterSpacing: 1 }}>
               {user?.role === 'ADMIN' ? 'Merchant' : 'Customer'}
             </Text>
           </View>
         </View>
 
         {/* Profile Information */}
-        <View className="bg-zinc-900 rounded-2xl p-6 mb-6 border border-zinc-800">
-          <View className="flex-row justify-between items-center mb-4">
-            <Text className="text-zinc-500 font-bold uppercase text-xs tracking-widest">Personal Information</Text>
+        <View style={[commonStyles.card, { marginBottom: 24 }]}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+            <Text style={{ color: colors.textSecondary, fontWeight: 'bold', textTransform: 'uppercase', fontSize: 12, letterSpacing: 2 }}>Personal Information</Text>
             {!changingPassword && (
               <TouchableOpacity onPress={() => setIsEditing(!isEditing)}>
-                <Edit2 color="#f59e0b" size={20} />
+                <Edit2 color={colors.primary} size={20} />
               </TouchableOpacity>
             )}
           </View>
 
-          <View className="space-y-4">
+          <View style={{  }}>
             <View>
-              <Text className="text-zinc-500 text-sm mb-2">Name</Text>
+              <Text style={{ color: colors.textSecondary, fontSize: 14, marginBottom: 8 }}>Name</Text>
               {isEditing ? (
                 <TextInput
-                  className="bg-zinc-800 text-white px-4 py-3 rounded-xl"
+                  style={[commonStyles.input, { paddingHorizontal: 16, paddingVertical: 12, borderRadius: 12 }]}
                   value={name}
                   onChangeText={setName}
                   placeholder="Enter your name"
-                  placeholderTextColor="#71717a"
+                  placeholderTextColor={colors.textSecondary}
                 />
               ) : (
-                <Text className="text-white text-lg font-semibold">{user?.name}</Text>
+                <Text style={{ color: colors.text, fontSize: 18, fontWeight: '600' }}>{user?.name}</Text>
               )}
             </View>
 
             <View>
-              <Text className="text-zinc-500 text-sm mb-2">Email</Text>
+              <Text style={{ color: colors.textSecondary, fontSize: 14, marginBottom: 8 }}>Email</Text>
               {isEditing ? (
                 <TextInput
-                  className="bg-zinc-800 text-white px-4 py-3 rounded-xl"
+                  style={[commonStyles.input, { paddingHorizontal: 16, paddingVertical: 12, borderRadius: 12 }]}
                   value={email}
                   onChangeText={setEmail}
                   placeholder="Enter your email"
-                  placeholderTextColor="#71717a"
+                  placeholderTextColor={colors.textSecondary}
                   keyboardType="email-address"
                   autoCapitalize="none"
                 />
               ) : (
-                <Text className="text-white text-lg font-semibold">{user?.email}</Text>
+                <Text style={{ color: colors.text, fontSize: 18, fontWeight: '600' }}>{user?.email}</Text>
               )}
             </View>
 
             <View>
-              <Text className="text-zinc-500 text-sm mb-2">Default Delivery Address</Text>
+              <Text style={{ color: colors.textSecondary, fontSize: 14, marginBottom: 8 }}>Default Delivery Address</Text>
               {isEditing ? (
                 <TextInput
-                  className="bg-zinc-800 text-white px-4 py-3 rounded-xl"
+                  style={[commonStyles.input, { paddingHorizontal: 16, paddingVertical: 12, borderRadius: 12 }]}
                   value={address}
                   onChangeText={setAddress}
                   placeholder="Enter your default address"
-                  placeholderTextColor="#71717a"
+                  placeholderTextColor={colors.textSecondary}
                   multiline
                 />
               ) : (
-                <Text className="text-white text-lg font-semibold">{user?.address || 'No address saved'}</Text>
+                <Text style={{ color: colors.text, fontSize: 18, fontWeight: '600' }}>{user?.address || 'No address saved'}</Text>
               )}
             </View>
           </View>
 
           {isEditing && (
             <TouchableOpacity
-              className={`bg-amber-500 py-4 rounded-xl items-center mt-6 ${loading ? 'opacity-70' : ''}`}
+              style={[
+                commonStyles.button,
+                { paddingVertical: 16, borderRadius: 12, marginTop: 24 },
+                loading && { opacity: 0.7 }
+              ]}
               onPress={handleUpdateProfile}
               disabled={loading}
             >
               {loading ? (
-                <ActivityIndicator color="#09090b" />
+                <ActivityIndicator color={colors.background} />
               ) : (
-                <View className="flex-row items-center">
-                  <Save color="#09090b" size={20} />
-                  <Text className="text-zinc-950 font-bold ml-2">Save Changes</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Save color={colors.background} size={20} />
+                  <Text style={[commonStyles.buttonText, { color: colors.background, marginLeft: 8 }]}>Save Changes</Text>
                 </View>
               )}
             </TouchableOpacity>
@@ -234,53 +239,57 @@ export default function ProfileScreen({ navigation }: any) {
         </View>
 
         {/* Change Password Section */}
-        <View className="bg-zinc-900 rounded-2xl p-6 mb-6 border border-zinc-800">
+        <View style={[commonStyles.card, { marginBottom: 24 }]}>
           <TouchableOpacity
-            className="flex-row justify-between items-center"
+            style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
             onPress={() => setChangingPassword(!changingPassword)}
           >
-            <View className="flex-row items-center">
-              <Shield color="#71717a" size={20} />
-              <Text className="text-white font-semibold ml-3">Change Password</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Shield color={colors.textSecondary} size={20} />
+              <Text style={{ color: colors.text, fontWeight: '600', marginLeft: 12 }}>Change Password</Text>
             </View>
-            <Text className="text-zinc-500">{changingPassword ? '−' : '+'}</Text>
+            <Text style={{ color: colors.textSecondary }}>{changingPassword ? '−' : '+'}</Text>
           </TouchableOpacity>
 
           {changingPassword && (
-            <View className="mt-4 space-y-3">
+            <View style={{ marginTop: 16 }}>
               <TextInput
-                className="bg-zinc-800 text-white px-4 py-3 rounded-xl"
+                style={[commonStyles.input, { paddingHorizontal: 16, paddingVertical: 12, borderRadius: 12 }]}
                 placeholder="Current Password"
-                placeholderTextColor="#71717a"
+                placeholderTextColor={colors.textSecondary}
                 value={currentPassword}
                 onChangeText={setCurrentPassword}
                 secureTextEntry
               />
               <TextInput
-                className="bg-zinc-800 text-white px-4 py-3 rounded-xl"
+                style={[commonStyles.input, { paddingHorizontal: 16, paddingVertical: 12, borderRadius: 12 }]}
                 placeholder="New Password"
-                placeholderTextColor="#71717a"
+                placeholderTextColor={colors.textSecondary}
                 value={newPassword}
                 onChangeText={setNewPassword}
                 secureTextEntry
               />
               <TextInput
-                className="bg-zinc-800 text-white px-4 py-3 rounded-xl"
+                style={[commonStyles.input, { paddingHorizontal: 16, paddingVertical: 12, borderRadius: 12 }]}
                 placeholder="Confirm New Password"
-                placeholderTextColor="#71717a"
+                placeholderTextColor={colors.textSecondary}
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
                 secureTextEntry
               />
               <TouchableOpacity
-                className={`bg-amber-500 py-4 rounded-xl items-center mt-4 ${loading ? 'opacity-70' : ''}`}
+                style={[
+                  commonStyles.button,
+                  { paddingVertical: 16, borderRadius: 12, marginTop: 16 },
+                  loading && { opacity: 0.7 }
+                ]}
                 onPress={handleChangePassword}
                 disabled={loading}
               >
                 {loading ? (
-                  <ActivityIndicator color="#09090b" />
+                  <ActivityIndicator color={colors.background} />
                 ) : (
-                  <Text className="text-zinc-950 font-bold">Update Password</Text>
+                  <Text style={[commonStyles.buttonText, { color: colors.background }]}>Update Password</Text>
                 )}
               </TouchableOpacity>
             </View>
@@ -289,21 +298,21 @@ export default function ProfileScreen({ navigation }: any) {
 
         {/* Account Stats (for customers) */}
         {user?.role === 'CUSTOMER' && (
-          <View className="bg-zinc-900 rounded-2xl p-6 mb-6 border border-zinc-800">
-            <View className="flex-row justify-between items-center mb-4">
-              <Text className="text-zinc-500 font-bold uppercase text-xs tracking-widest">Account Stats</Text>
+          <View style={[commonStyles.card, { marginBottom: 24 }]}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+              <Text style={{ color: colors.textSecondary, fontWeight: 'bold', textTransform: 'uppercase', fontSize: 12, letterSpacing: 2 }}>Account Stats</Text>
               <TouchableOpacity onPress={fetchStats}>
-                <Text className="text-amber-500 text-xs font-bold">REFRESH</Text>
+                <Text style={{ color: colors.primary, fontSize: 12, fontWeight: 'bold' }}>REFRESH</Text>
               </TouchableOpacity>
             </View>
-            <View className="flex-row justify-between">
-              <View className="flex-1 mr-2">
-                <Text className="text-3xl font-bold text-amber-500">{stats.totalOrders}</Text>
-                <Text className="text-zinc-500 text-sm mt-1">Total Orders</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <View style={{ flex: 1, marginRight: 8 }}>
+                <Text style={{ fontSize: 32, fontWeight: 'bold', color: colors.primary }}>{stats.totalOrders}</Text>
+                <Text style={{ color: colors.textSecondary, fontSize: 14, marginTop: 4 }}>Total Orders</Text>
               </View>
-              <View className="flex-1 ml-2">
-                <Text className="text-3xl font-bold text-amber-500">₹{stats.totalSpent.toLocaleString()}</Text>
-                <Text className="text-zinc-500 text-sm mt-1">Total Spent</Text>
+              <View style={{ flex: 1, marginLeft: 8 }}>
+                <Text style={{ fontSize: 32, fontWeight: 'bold', color: colors.primary }}>₹{stats.totalSpent.toLocaleString()}</Text>
+                <Text style={{ color: colors.textSecondary, fontSize: 14, marginTop: 4 }}>Total Spent</Text>
               </View>
             </View>
           </View>
@@ -311,11 +320,20 @@ export default function ProfileScreen({ navigation }: any) {
 
         {/* Logout Button */}
         <TouchableOpacity
-          className="bg-red-500/10 border border-red-500 py-5 rounded-2xl items-center flex-row justify-center"
+          style={{
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+            borderWidth: 1,
+            borderColor: colors.error,
+            paddingVertical: 20,
+            borderRadius: 16,
+            alignItems: 'center',
+            flexDirection: 'row',
+            justifyContent: 'center'
+          }}
           onPress={handleLogout}
         >
-          <LogOut color="#ef4444" size={20} />
-          <Text className="text-red-500 font-bold ml-2 uppercase tracking-wider">Logout</Text>
+          <LogOut color={colors.error} size={20} />
+          <Text style={{ color: colors.error, fontWeight: 'bold', marginLeft: 8, textTransform: 'uppercase', letterSpacing: 1 }}>Logout</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

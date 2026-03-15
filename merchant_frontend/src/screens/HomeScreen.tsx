@@ -1,20 +1,21 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Store } from 'lucide-react-native';
+import { commonStyles, colors } from '../utils/styles';
 
 export default function HomeScreen({ navigation }: any) {
   return (
-    <View className="flex-1 items-center justify-center bg-zinc-900">
-      <View className="items-center mb-8">
-        <Store color="#f59e0b" size={48} />
-        <Text className="text-3xl font-bold text-amber-500 mt-4">Rohit Sweets</Text>
-        <Text className="text-xl font-semibold text-white mt-2">Merchant Dashboard</Text>
-        <Text className="text-zinc-400 mt-1">Manage your restaurant business</Text>
+    <View style={[commonStyles.centerContainer, { backgroundColor: colors.surface }]}>
+      <View style={{ alignItems: 'center', marginBottom: 32 }}>
+        <Store color={colors.primary} size={48} />
+        <Text style={{ fontSize: 32, fontWeight: 'bold', color: colors.primary, marginTop: 16 }}>Rohit Sweets</Text>
+        <Text style={{ fontSize: 20, fontWeight: '600', color: colors.text, marginTop: 8 }}>Merchant Dashboard</Text>
+        <Text style={{ color: colors.textSecondary, marginTop: 4 }}>Manage your restaurant business</Text>
       </View>
       <TouchableOpacity
-        className="bg-amber-500 px-8 py-4 rounded-xl shadow-lg shadow-amber-500/30"
+        style={[commonStyles.button, { paddingHorizontal: 32, paddingVertical: 16, borderRadius: 12 }]}
         onPress={() => navigation.navigate('Login')}
       >
-        <Text className="text-zinc-900 font-bold text-lg">Continue to Merchant Portal</Text>
+        <Text style={[commonStyles.buttonText, { color: colors.background, fontSize: 18 }]}>Continue to Merchant Portal</Text>
       </TouchableOpacity>
     </View>
   );

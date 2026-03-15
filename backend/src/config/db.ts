@@ -1,22 +1,18 @@
 import { PrismaClient } from '@prisma/client';
-import { Pool } from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
-import dotenv from 'dotenv';
+import { Pool } from 'pg';
 
-// Ensure .env is loaded
-dotenv.config();
-
-const connectionString = process.env.DATABASE_URL;
-
-console.log('Database URL being used:', connectionString); // Debug log
-
+const connectionString = process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/fooddelivery?schema=public';
 const pool = new Pool({ connectionString });
 const adapter = new PrismaPg(pool);
 
-declare global {
-  var prisma: PrismaClient | undefined;
-}
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
-export const prisma = global.prisma || new PrismaClient({ adapter });
+export const prisma =
+  globalForPrisma.prisma ||
+  new PrismaClient({
+    adapter,
+    log: ['query', 'error', 'warn'],
+  });
 
-if (process.env.NODE_ENV !== 'production') global.prisma = prisma;
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;

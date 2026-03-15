@@ -1,5 +1,5 @@
 import express from 'express';
-import { authMiddleware } from '../middleware/auth';
+import { authenticateToken } from '../middleware/auth';
 import {
   createStore,
   getStores,
@@ -23,7 +23,7 @@ router.get('/:id', getStoreById);
 router.get('/:id/menu', getStoreMenu);
 
 // Protected routes (for merchants)
-router.use(authMiddleware);
+router.use(authenticateToken);
 
 // Store management (merchants only)
 router.post('/', createStore);

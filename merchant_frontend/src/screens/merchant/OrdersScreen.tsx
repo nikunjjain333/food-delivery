@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl, Alert } from 'react-native';
 import { useOrdersStore, Order } from '../../store/useOrdersStore';
 import { Clock, ShoppingBag, User, MapPin } from 'lucide-react-native';
+import { commonStyles, colors } from '../../utils/styles';
 
 export default function OrdersScreen() {
   const { orders, loading, fetchAllOrders, updateOrderStatus } = useOrdersStore();
@@ -28,108 +29,120 @@ export default function OrdersScreen() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'PENDING': return 'text-amber-500 bg-amber-500/10';
-      case 'ACCEPTED': return 'text-blue-500 bg-blue-500/10';
-      case 'DISPATCHED': return 'text-orange-500 bg-orange-500/10';
-      case 'DELIVERED': return 'text-emerald-500 bg-emerald-500/10';
-      case 'DECLINED': return 'text-red-500 bg-red-500/10';
-      default: return 'text-zinc-500 bg-zinc-500/10';
+      case 'PENDING': return { color: colors.primary, backgroundColor: 'rgba(245, 158, 11, 0.1)' };
+      case 'ACCEPTED': return { color: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)' };
+      case 'DISPATCHED': return { color: '#f97316', backgroundColor: 'rgba(249, 115, 22, 0.1)' };
+      case 'DELIVERED': return { color: colors.success, backgroundColor: 'rgba(16, 185, 129, 0.1)' };
+      case 'DECLINED': return { color: colors.error, backgroundColor: 'rgba(239, 68, 68, 0.1)' };
+      default: return { color: colors.textSecondary, backgroundColor: 'rgba(161, 161, 170, 0.1)' };
     }
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-zinc-950">
-      <ScrollView 
-        className="flex-1 px-6 pt-6 mb-20"
+    <SafeAreaView style={commonStyles.container}>
+      <ScrollView
+        style={{ flex: 1, paddingHorizontal: 24, paddingTop: 24, marginBottom: 80 }}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#f59e0b" />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />
         }
       >
-        <Text className="text-3xl font-extrabold text-amber-500 mb-2">Orders</Text>
-        <Text className="text-zinc-400 mb-8">Manage active customer orders</Text>
+        <Text style={{ fontSize: 30, fontWeight: '800', color: colors.primary, marginBottom: 8 }}>Orders</Text>
+        <Text style={{ color: colors.textSecondary, marginBottom: 32 }}>Manage active customer orders</Text>
 
         {loading && orders.length === 0 ? (
-          <ActivityIndicator color="#f59e0b" size="large" className="mt-10" />
+          <ActivityIndicator color={colors.primary} size="large" style={{ marginTop: 40 }} />
         ) : (
-          <View className="space-y-6 pb-10">
+          <View style={{ paddingBottom: 40 }}>
             {orders.map((order) => (
-              <View key={order.id} className="bg-zinc-900 border border-zinc-800 rounded-3xl p-6 shadow-xl mb-6">
-                
-                <View className="flex-row justify-between mb-4 border-b border-zinc-800/50 pb-4">
+              <View key={order.id} style={[commonStyles.card, { borderRadius: 24, padding: 24, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 5, marginBottom: 24 }]}>
+
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16, borderBottomWidth: 1, borderBottomColor: 'rgba(39, 39, 42, 0.5)', paddingBottom: 16 }}>
                   <View>
-                    <Text className="text-white font-bold text-xl uppercase">#{order.id.slice(-6)}</Text>
-                    <View className="flex-row items-center mt-1">
-                      <Clock size={12} color="#71717a" />
-                      <Text className="text-zinc-500 text-xs ml-1">
+                    <Text style={{ color: colors.text, fontWeight: 'bold', fontSize: 20, textTransform: 'uppercase' }}>#{order.id.slice(-6)}</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
+                      <Clock size={12} color={colors.textSecondary} />
+                      <Text style={{ color: colors.textSecondary, fontSize: 12, marginLeft: 4 }}>
                         {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • {order.paymentMethod}
                       </Text>
                     </View>
                   </View>
-                  <View className={`px-4 py-1.5 rounded-full items-center justify-center self-start ${getStatusColor(order.status).split(' ').slice(1).join(' ')}`}>
-                    <Text className={`font-black text-[10px] ${getStatusColor(order.status).split(' ')[0]}`}>
+                  <View style={[
+                    { paddingHorizontal: 16, paddingVertical: 6, borderRadius: 999, alignItems: 'center', justifyContent: 'center', alignSelf: 'flex-start' },
+                    { backgroundColor: getStatusColor(order.status).backgroundColor }
+                  ]}>
+                    <Text style={[
+                      { fontWeight: '900', fontSize: 10 },
+                      { color: getStatusColor(order.status).color }
+                    ]}>
                       {order.status}
                     </Text>
                   </View>
                 </View>
 
-                <View className="mb-6 space-y-3">
-                  <View className="flex-row items-center">
-                    <User size={16} color="#f59e0b" />
-                    <Text className="text-zinc-100 ml-2 font-bold">{order.user?.name}</Text>
-                    <Text className="text-zinc-500 text-xs ml-2">({order.user?.email})</Text>
+                <View style={{ marginBottom: 24 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
+                    <User size={16} color={colors.primary} />
+                    <Text style={{ color: colors.text, marginLeft: 8, fontWeight: 'bold' }}>{order.user?.name}</Text>
+                    <Text style={{ color: colors.textSecondary, fontSize: 12, marginLeft: 8 }}>({order.user?.email})</Text>
                   </View>
 
-                  <View className="flex-row items-start">
-                    <MapPin size={16} color="#71717a" />
-                    <Text className="text-zinc-400 text-xs ml-2 flex-1">{order.deliveryAddress}</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 8 }}>
+                    <MapPin size={16} color={colors.textSecondary} />
+                    <Text style={{ color: colors.textSecondary, fontSize: 12, marginLeft: 8, flex: 1 }}>{order.deliveryAddress}</Text>
                   </View>
                   
-                  <View className="bg-zinc-950/50 rounded-2xl p-4 mt-2 border border-zinc-800/50">
+                  <View style={{ backgroundColor: 'rgba(9, 9, 11, 0.5)', borderRadius: 16, padding: 16, marginTop: 8, borderWidth: 1, borderColor: 'rgba(39, 39, 42, 0.5)' }}>
                     {order.items.map((item, idx) => (
-                      <View key={item.id} className={`flex-row justify-between ${idx !== order.items.length - 1 ? 'mb-3' : ''}`}>
-                        <Text className="text-zinc-300 flex-1">{item.quantity}x {item.sweet.name}</Text>
-                        <Text className="text-zinc-100 font-bold ml-4">₹{item.price * item.quantity}</Text>
+                      <View key={item.id} style={[
+                        { flexDirection: 'row', justifyContent: 'space-between' },
+                        idx !== order.items.length - 1 && { marginBottom: 12 }
+                      ]}>
+                        <Text style={{ color: colors.text, flex: 1 }}>{item.quantity}x {item.sweet.name}</Text>
+                        <Text style={{ color: colors.text, fontWeight: 'bold', marginLeft: 16 }}>₹{item.price * item.quantity}</Text>
                       </View>
                     ))}
-                    <View className="h-[1px] bg-zinc-800 my-3" />
-                    <View className="flex-row justify-between items-center">
-                      <Text className="text-zinc-500 font-bold">Total Amount</Text>
-                      <Text className="text-amber-500 font-black text-xl">₹{order.totalAmount}</Text>
+                    <View style={{ height: 1, backgroundColor: colors.border, marginVertical: 12 }} />
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <Text style={{ color: colors.textSecondary, fontWeight: 'bold' }}>Total Amount</Text>
+                      <Text style={{ color: colors.primary, fontWeight: '900', fontSize: 20 }}>₹{order.totalAmount}</Text>
                     </View>
                   </View>
                 </View>
 
-                <View className="flex-row space-x-3 mt-2">
+                <View style={{ flexDirection: 'row', marginTop: 8 }}>
                   {order.status === 'PENDING' && (
                     <>
-                      <TouchableOpacity 
-                        className="flex-1 bg-zinc-800 py-4 rounded-2xl items-center border border-zinc-700"
+                      <TouchableOpacity
+                        style={{ flex: 1, backgroundColor: colors.border, paddingVertical: 16, borderRadius: 16, alignItems: 'center', borderWidth: 1, borderColor: colors.border, marginRight: 12 }}
                         onPress={() => handleStatusUpdate(order.id, 'DECLINED')}
                       >
-                        <Text className="text-red-500 font-bold">Decline</Text>
+                        <Text style={{ color: colors.error, fontWeight: 'bold' }}>Decline</Text>
                       </TouchableOpacity>
-                      <TouchableOpacity 
-                        className="flex-1 bg-amber-500 py-4 rounded-2xl items-center shadow-lg shadow-amber-500/20"
+                      <TouchableOpacity
+                        style={[
+                          commonStyles.button,
+                          { flex: 1, paddingVertical: 16, borderRadius: 16, shadowColor: colors.primary, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 3.84 }
+                        ]}
                         onPress={() => handleStatusUpdate(order.id, 'ACCEPTED')}
                       >
-                        <Text className="text-zinc-950 font-black">Accept Order</Text>
+                        <Text style={[commonStyles.buttonText, { color: colors.background, fontWeight: '900' }]}>Accept Order</Text>
                       </TouchableOpacity>
                     </>
                   )}
                   {order.status === 'ACCEPTED' && (
-                    <TouchableOpacity 
-                      className="flex-1 bg-blue-500 py-4 rounded-2xl items-center shadow-lg shadow-blue-500/20"
+                    <TouchableOpacity
+                      style={{ flex: 1, backgroundColor: '#3b82f6', paddingVertical: 16, borderRadius: 16, alignItems: 'center', shadowColor: '#3b82f6', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 3.84 }}
                       onPress={() => handleStatusUpdate(order.id, 'DISPATCHED')}
                     >
-                      <Text className="text-white font-black">Mark as Dispatched</Text>
+                      <Text style={{ color: 'white', fontWeight: '900' }}>Mark as Dispatched</Text>
                     </TouchableOpacity>
                   )}
                   {order.status === 'DISPATCHED' && (
-                    <TouchableOpacity 
-                      className="flex-1 bg-emerald-500 py-4 rounded-2xl items-center shadow-lg shadow-emerald-500/20"
+                    <TouchableOpacity
+                      style={{ flex: 1, backgroundColor: colors.success, paddingVertical: 16, borderRadius: 16, alignItems: 'center', shadowColor: colors.success, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 3.84 }}
                       onPress={() => handleStatusUpdate(order.id, 'DELIVERED')}
                     >
-                      <Text className="text-white font-black">Mark as Delivered</Text>
+                      <Text style={{ color: 'white', fontWeight: '900' }}>Mark as Delivered</Text>
                     </TouchableOpacity>
                   )}
                 </View>
@@ -137,9 +150,9 @@ export default function OrdersScreen() {
               </View>
             ))}
             {orders.length === 0 && (
-              <View className="items-center justify-center mt-20">
-                <ShoppingBag size={64} color="#27272a" />
-                <Text className="text-zinc-500 mt-4 text-lg">No orders found</Text>
+              <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 80 }}>
+                <ShoppingBag size={64} color={colors.border} />
+                <Text style={{ color: colors.textSecondary, marginTop: 16, fontSize: 18 }}>No orders found</Text>
               </View>
             )}
           </View>

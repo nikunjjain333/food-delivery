@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, TextInput, Alert, KeyboardAvoidingView, P
 import { useAuthStore } from '../store/useAuthStore';
 import api from '../api/client';
 import { Store, Eye, EyeOff } from 'lucide-react-native';
+import { commonStyles, colors } from '../utils/styles';
 
 export default function LoginScreen({ navigation }: any) {
   const loginStore = useAuthStore((state) => state.login);
@@ -49,79 +50,100 @@ export default function LoginScreen({ navigation }: any) {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-zinc-950">
+    <SafeAreaView style={commonStyles.container}>
       {/* Merchant Badge */}
-      <View className="absolute top-12 left-6 z-10">
-        <View className="bg-amber-500/10 px-4 py-2 rounded-full border border-amber-500/30 flex-row items-center">
+      <View style={{ position: 'absolute', top: 48, left: 24, zIndex: 10 }}>
+        <View style={{
+          backgroundColor: 'rgba(245, 158, 11, 0.1)',
+          paddingHorizontal: 16,
+          paddingVertical: 8,
+          borderRadius: 999,
+          borderWidth: 1,
+          borderColor: 'rgba(245, 158, 11, 0.3)',
+          flexDirection: 'row',
+          alignItems: 'center'
+        }}>
           <Store color="#f59e0b" size={20} />
-          <Text className="text-amber-500 font-bold ml-2">MERCHANT</Text>
+          <Text style={{ color: colors.primary, fontWeight: 'bold', marginLeft: 8 }}>MERCHANT</Text>
         </View>
       </View>
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        className="flex-1 items-center justify-center px-6"
+        style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24 }}
       >
-        <Text className="text-5xl font-extrabold text-amber-500 mb-2">Rohit Sweets</Text>
-        <Text className="text-2xl font-bold text-white mb-2">Merchant Portal</Text>
-        <Text className="text-zinc-400 mb-10 text-lg">Manage your sweet business</Text>
+        <Text style={{ fontSize: 48, fontWeight: '800', color: colors.primary, marginBottom: 8 }}>Rohit Sweets</Text>
+        <Text style={{ fontSize: 24, fontWeight: 'bold', color: colors.text, marginBottom: 8 }}>Merchant Portal</Text>
+        <Text style={{ color: colors.textSecondary, marginBottom: 40, fontSize: 18 }}>Manage your sweet business</Text>
 
-        <View className="w-full space-y-4">
+        <View style={{ width: '100%' }}>
           <TextInput
-            className="w-full bg-zinc-900 text-white px-5 py-5 rounded-2xl border border-zinc-800 focus:border-amber-500"
+            style={[commonStyles.input, { marginBottom: 16, paddingHorizontal: 20, paddingVertical: 20, borderRadius: 16 }]}
             placeholder="Email address"
-            placeholderTextColor="#71717a"
+            placeholderTextColor={colors.textSecondary}
             value={email}
             onChangeText={setEmail}
             autoCapitalize="none"
             keyboardType="email-address"
           />
-          <View className="relative">
+          <View style={{ position: 'relative' }}>
             <TextInput
-              className="w-full bg-zinc-900 text-white px-5 py-5 pr-14 rounded-2xl border border-zinc-800 focus:border-amber-500"
+              style={[commonStyles.input, { paddingHorizontal: 20, paddingVertical: 20, paddingRight: 56, borderRadius: 16 }]}
               placeholder="Password"
-              placeholderTextColor="#71717a"
+              placeholderTextColor={colors.textSecondary}
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
             />
             <TouchableOpacity
-              className="absolute right-5 top-5"
+              style={{ position: 'absolute', right: 20, top: 20 }}
               onPress={() => setShowPassword(!showPassword)}
             >
               {showPassword ? (
-                <EyeOff color="#71717a" size={22} />
+                <EyeOff color={colors.textSecondary} size={22} />
               ) : (
-                <Eye color="#71717a" size={22} />
+                <Eye color={colors.textSecondary} size={22} />
               )}
             </TouchableOpacity>
           </View>
         </View>
 
         {statusMsg && (
-          <View className={`w-full p-4 rounded-2xl mt-6 ${statusMsg.type === 'success' ? 'bg-emerald-500/10 border border-emerald-500/20' : 'bg-rose-500/10 border border-rose-500/20'}`}>
-            <Text className={`text-center font-bold ${statusMsg.type === 'success' ? 'text-emerald-500' : 'text-rose-500'}`}>
+          <View style={[
+            { width: '100%', padding: 16, borderRadius: 16, marginTop: 24, borderWidth: 1 },
+            statusMsg.type === 'success'
+              ? { backgroundColor: 'rgba(16, 185, 129, 0.1)', borderColor: 'rgba(16, 185, 129, 0.2)' }
+              : { backgroundColor: 'rgba(239, 68, 68, 0.1)', borderColor: 'rgba(239, 68, 68, 0.2)' }
+          ]}>
+            <Text style={[
+              { textAlign: 'center', fontWeight: 'bold' },
+              { color: statusMsg.type === 'success' ? colors.success : colors.error }
+            ]}>
               {statusMsg.text}
             </Text>
           </View>
         )}
 
         <TouchableOpacity
-          className={`w-full bg-amber-500 py-5 items-center rounded-2xl mt-10 shadow-lg shadow-amber-500/20 ${loading ? 'opacity-70' : ''}`}
+          style={[
+            commonStyles.button,
+            { width: '100%', paddingVertical: 20, borderRadius: 16, marginTop: 40 },
+            loading && { opacity: 0.7 }
+          ]}
           onPress={handleLogin}
           disabled={loading}
         >
           {loading ? (
-            <ActivityIndicator color="#09090b" />
+            <ActivityIndicator color={colors.background} />
           ) : (
-            <Text className="text-zinc-950 font-bold text-xl">Sign In</Text>
+            <Text style={[commonStyles.buttonText, { color: colors.background, fontSize: 20 }]}>Sign In</Text>
           )}
         </TouchableOpacity>
 
-        <View className="mt-8 flex-row">
-          <Text className="text-zinc-500">New merchant? </Text>
+        <View style={{ marginTop: 32, flexDirection: 'row' }}>
+          <Text style={{ color: colors.textSecondary }}>New merchant? </Text>
           <TouchableOpacity onPress={() => navigation.navigate('MerchantRegister')}>
-            <Text className="text-amber-500 font-bold">Register Your Business</Text>
+            <Text style={{ color: colors.primary, fontWeight: 'bold' }}>Register Your Business</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>

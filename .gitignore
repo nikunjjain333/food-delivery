@@ -3,6 +3,7 @@ node_modules/
 */node_modules/
 npm-debug.log*
 yarn-error.log*
+package-lock.json
 
 # Environment files
 .env
@@ -35,8 +36,37 @@ yarn-error.log*
 coverage/
 .nyc_output/
 
+# Database
+*.db
+backend/dev.db
+backend/*.db
+
+# Expo
+.expo/
+*/.expo/
+*.expo-shared
+
+# React Native
+*.jsbundle
+ios/Pods/
+android/.gradle/
+android/app/build/
+android/build/
+
 # Misc
 .DS_Store
 Thumbs.db
 *.tmp
 *.bak
+
+# Temporary files
+customer_frontend/src/polyfills.js
+merchant_frontend/src/polyfills.js
+customer_frontend/src/utils/
+merchant_frontend/src/utils/
+
+# Config files that were removed
+backend/prisma.config.*
+PORT_CONFIGURATION.md
+*/nativewind-env.d.ts
+*/tailwind.config.js

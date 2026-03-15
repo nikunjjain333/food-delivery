@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAuthStore } from '../store/useAuthStore';
+import { commonStyles, colors } from '../utils/styles';
 
 // Screens
 import LoginScreen from '../screens/LoginScreen';
@@ -26,8 +27,8 @@ export default function AppNavigator() {
 
   if (isInitializing) {
     return (
-      <View className="flex-1 items-center justify-center bg-zinc-950">
-        <ActivityIndicator color="#f59e0b" size="large" />
+      <View style={commonStyles.centerContainer}>
+        <ActivityIndicator color={colors.primary} size="large" />
       </View>
     );
   }

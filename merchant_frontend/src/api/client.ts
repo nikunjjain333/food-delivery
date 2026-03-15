@@ -8,7 +8,7 @@ import { Platform } from 'react-native';
 // Web: localhost
 const getBaseUrl = () => {
   const host = '192.168.31.166'; // Local machine IP
-  const port = '3000';
+  const port = '5000';
   
   if (Platform.OS === 'android') return `http://${host}:${port}/api`;
   if (Platform.OS === 'web') return `http://localhost:${port}/api`;

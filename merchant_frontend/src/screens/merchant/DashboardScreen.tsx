@@ -5,6 +5,7 @@ import { useOrdersStore } from '../../store/useOrdersStore';
 import { useMerchantStoresStore } from '../../store/useMerchantStoresStore';
 import { LogOut, TrendingUp, Package, Clock, Crown, Award, MapPin, ChevronDown } from 'lucide-react-native';
 import api from '../../api/client';
+import { commonStyles, colors } from '../../utils/styles';
 
 export default function DashboardScreen({ navigation }: any) {
   const { user, logout } = useAuthStore();
@@ -58,154 +59,159 @@ export default function DashboardScreen({ navigation }: any) {
   const pendingOrders = orders.filter(o => o.status === 'PENDING').length;
 
   return (
-    <SafeAreaView className="flex-1 bg-zinc-950">
-      <ScrollView 
-        className="flex-1 px-6 pt-6"
+    <SafeAreaView style={commonStyles.container}>
+      <ScrollView
+        style={{ flex: 1, paddingHorizontal: 24, paddingTop: 24 }}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#f59e0b" />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />
         }
       >
-        <View className="flex-row justify-between items-center mb-6">
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
           <View>
-            <View className="bg-amber-500/10 px-3 py-1 rounded-full mb-2 self-start">
-              <Text className="text-amber-500 font-bold text-xs">MERCHANT PORTAL</Text>
+            <View style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)', paddingHorizontal: 12, paddingVertical: 4, borderRadius: 999, marginBottom: 8, alignSelf: 'flex-start' }}>
+              <Text style={{ color: colors.primary, fontWeight: 'bold', fontSize: 12 }}>MERCHANT PORTAL</Text>
             </View>
-            <Text className="text-zinc-400 text-lg">Business Dashboard</Text>
-            <Text className="text-3xl font-extrabold text-amber-500">{user?.name} Sweets</Text>
+            <Text style={{ color: colors.textSecondary, fontSize: 18 }}>Business Dashboard</Text>
+            <Text style={{ fontSize: 30, fontWeight: '800', color: colors.primary }}>{user?.name} Sweets</Text>
           </View>
           <TouchableOpacity
-            className="bg-zinc-900 border border-zinc-800 p-3 rounded-2xl"
+            style={[commonStyles.card, { padding: 12, borderRadius: 16 }]}
             onPress={logout}
           >
-            <LogOut color="#ef4444" size={20} />
+            <LogOut color={colors.error} size={20} />
           </TouchableOpacity>
         </View>
 
         {/* Store Selection */}
         <TouchableOpacity
           onPress={() => navigation.navigate('TabStores')}
-          className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-8 flex-row items-center justify-between"
+          style={[commonStyles.card, { padding: 16, marginBottom: 32, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }]}
         >
-          <View className="flex-row items-center flex-1">
-            <MapPin size={20} color="#f59e0b" />
-            <View className="ml-3 flex-1">
+          <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+            <MapPin size={20} color={colors.primary} />
+            <View style={{ marginLeft: 12, flex: 1 }}>
               {currentStore ? (
                 <>
-                  <Text className="text-zinc-100 font-bold">{currentStore.name}</Text>
-                  <Text className="text-zinc-400 text-sm" numberOfLines={1}>
+                  <Text style={{ color: colors.text, fontWeight: 'bold' }}>{currentStore.name}</Text>
+                  <Text style={{ color: colors.textSecondary, fontSize: 14 }} numberOfLines={1}>
                     {currentStore.address}
                   </Text>
                 </>
               ) : merchantStores.length > 0 ? (
                 <>
-                  <Text className="text-zinc-100 font-bold">All Stores</Text>
-                  <Text className="text-zinc-400 text-sm">
+                  <Text style={{ color: colors.text, fontWeight: 'bold' }}>All Stores</Text>
+                  <Text style={{ color: colors.textSecondary, fontSize: 14 }}>
                     {merchantStores.length} locations available
                   </Text>
                 </>
               ) : (
                 <>
-                  <Text className="text-zinc-100 font-bold">Create Your First Store</Text>
-                  <Text className="text-zinc-400 text-sm">Add a store location to get started</Text>
+                  <Text style={{ color: colors.text, fontWeight: 'bold' }}>Create Your First Store</Text>
+                  <Text style={{ color: colors.textSecondary, fontSize: 14 }}>Add a store location to get started</Text>
                 </>
               )}
             </View>
           </View>
-          <ChevronDown size={20} color="#71717a" />
+          <ChevronDown size={20} color={colors.textSecondary} />
         </TouchableOpacity>
 
         {loading && orders.length === 0 ? (
-          <ActivityIndicator color="#f59e0b" size="large" className="mt-10" />
+          <ActivityIndicator color={colors.primary} size="large" style={{ marginTop: 40 }} />
         ) : (
           <>
-            <View className="flex-row flex-wrap justify-between">
-              <View className="w-[48%] bg-zinc-900 border border-zinc-800 p-5 rounded-3xl mb-4 shadow-xl">
-                <View className="bg-amber-500/10 w-12 h-12 rounded-2xl items-center justify-center mb-4">
-                  <TrendingUp color="#f59e0b" size={24} />
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+              <View style={{ width: '48%', backgroundColor: colors.surface, borderColor: colors.border, borderWidth: 1, padding: 20, borderRadius: 24, marginBottom: 16, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 5 }}>
+                <View style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)', width: 48, height: 48, borderRadius: 16, alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
+                  <TrendingUp color={colors.primary} size={24} />
                 </View>
-                <Text className="text-zinc-500 font-bold mb-1">Today's Sales</Text>
-                <Text className="text-2xl font-black text-white">₹{todaySales.toLocaleString()}</Text>
+                <Text style={{ color: colors.textSecondary, fontWeight: 'bold', marginBottom: 4 }}>Today's Sales</Text>
+                <Text style={{ fontSize: 24, fontWeight: '900', color: colors.text }}>₹{todaySales.toLocaleString()}</Text>
               </View>
 
-              <View className="w-[48%] bg-zinc-900 border border-zinc-800 p-5 rounded-3xl mb-4 shadow-xl">
-                <View className="bg-emerald-500/10 w-12 h-12 rounded-2xl items-center justify-center mb-4">
-                  <Package color="#10b981" size={24} />
+              <View style={{ width: '48%', backgroundColor: colors.surface, borderColor: colors.border, borderWidth: 1, padding: 20, borderRadius: 24, marginBottom: 16, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 5 }}>
+                <View style={{ backgroundColor: 'rgba(16, 185, 129, 0.1)', width: 48, height: 48, borderRadius: 16, alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
+                  <Package color={colors.success} size={24} />
                 </View>
-                <Text className="text-zinc-500 font-bold mb-1">Active Orders</Text>
-                <Text className="text-2xl font-black text-white">{activeOrders}</Text>
+                <Text style={{ color: colors.textSecondary, fontWeight: 'bold', marginBottom: 4 }}>Active Orders</Text>
+                <Text style={{ fontSize: 24, fontWeight: '900', color: colors.text }}>{activeOrders}</Text>
               </View>
 
-              <View className="w-full bg-zinc-900 border border-zinc-800 p-5 rounded-3xl mb-4 shadow-xl flex-row items-center">
-                <View className="bg-amber-500 w-12 h-12 rounded-2xl items-center justify-center mr-4">
-                  <Clock color="#09090b" size={24} />
+              <View style={{ width: '100%', backgroundColor: colors.surface, borderColor: colors.border, borderWidth: 1, padding: 20, borderRadius: 24, marginBottom: 16, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 5, flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ backgroundColor: colors.primary, width: 48, height: 48, borderRadius: 16, alignItems: 'center', justifyContent: 'center', marginRight: 16 }}>
+                  <Clock color={colors.background} size={24} />
                 </View>
                 <View>
-                  <Text className="text-zinc-500 font-bold mb-1">Requires Attention</Text>
-                  <Text className="text-xl font-black text-amber-500">{pendingOrders} New Orders</Text>
+                  <Text style={{ color: colors.textSecondary, fontWeight: 'bold', marginBottom: 4 }}>Requires Attention</Text>
+                  <Text style={{ fontSize: 20, fontWeight: '900', color: colors.primary }}>{pendingOrders} New Orders</Text>
                 </View>
               </View>
             </View>
 
-            <View className="mt-8 mb-4 flex-row items-center">
-              <Crown color="#f59e0b" size={20} />
-              <Text className="text-xl font-bold text-zinc-100 ml-2">Top Selling Sweets</Text>
+            <View style={{ marginTop: 32, marginBottom: 16, flexDirection: 'row', alignItems: 'center' }}>
+              <Crown color={colors.primary} size={20} />
+              <Text style={{ fontSize: 20, fontWeight: 'bold', color: colors.text, marginLeft: 8 }}>Top Selling Sweets</Text>
             </View>
 
-            <View className="bg-zinc-900 border border-zinc-800 rounded-3xl p-5 mb-6">
+            <View style={[commonStyles.card, { borderRadius: 24, padding: 20, marginBottom: 24 }]}>
               {topSellers.map((sweet, index) => (
-                <View key={sweet.id} className="flex-row items-center justify-between mb-4 last:mb-0">
-                  <View className="flex-row items-center flex-1">
-                    <View className="bg-zinc-800 w-10 h-10 rounded-xl items-center justify-center mr-3">
-                      <Text className="text-amber-500 font-bold">{index + 1}</Text>
+                <View key={sweet.id} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: index === topSellers.length - 1 ? 0 : 16 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+                    <View style={{ backgroundColor: colors.border, width: 40, height: 40, borderRadius: 12, alignItems: 'center', justifyContent: 'center', marginRight: 12 }}>
+                      <Text style={{ color: colors.primary, fontWeight: 'bold' }}>{index + 1}</Text>
                     </View>
                     <View>
-                      <Text className="text-zinc-100 font-bold">{sweet.name}</Text>
-                      <Text className="text-zinc-500 text-xs">{sweet.totalSold} units sold</Text>
+                      <Text style={{ color: colors.text, fontWeight: 'bold' }}>{sweet.name}</Text>
+                      <Text style={{ color: colors.textSecondary, fontSize: 12 }}>{sweet.totalSold} units sold</Text>
                     </View>
                   </View>
-                  <View className="items-end">
-                    <Text className="text-white font-bold">₹{(sweet.price * sweet.totalSold).toLocaleString()}</Text>
-                    <Text className="text-zinc-500 text-[10px]">Revenue</Text>
+                  <View style={{ alignItems: 'flex-end' }}>
+                    <Text style={{ color: colors.text, fontWeight: 'bold' }}>₹{(sweet.price * sweet.totalSold).toLocaleString()}</Text>
+                    <Text style={{ color: colors.textSecondary, fontSize: 10 }}>Revenue</Text>
                   </View>
                 </View>
               ))}
               {topSellers.length === 0 && (
-                <Text className="text-zinc-500 text-center py-4">No sales data yet</Text>
+                <Text style={{ color: colors.textSecondary, textAlign: 'center', paddingVertical: 16 }}>No sales data yet</Text>
               )}
             </View>
 
-            <View className="flex-row justify-between items-center mt-6 mb-4">
-              <Text className="text-xl font-bold text-zinc-100">Recent Activity</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 24, marginBottom: 16 }}>
+              <Text style={{ fontSize: 20, fontWeight: 'bold', color: colors.text }}>Recent Activity</Text>
               <TouchableOpacity>
-                <Text className="text-amber-500 font-bold text-sm">View All</Text>
+                <Text style={{ color: colors.primary, fontWeight: 'bold', fontSize: 14 }}>View All</Text>
               </TouchableOpacity>
             </View>
 
-            <View className="bg-zinc-900 border border-zinc-800 rounded-3xl p-5 mb-10">
-              {orders.slice(0, 5).map((order) => (
-                <View 
-                  key={order.id} 
-                  className="flex-row justify-between py-4 border-b border-zinc-800/50 last:border-0"
+            <View style={[commonStyles.card, { borderRadius: 24, padding: 20, marginBottom: 40 }]}>
+              {orders.slice(0, 5).map((order, index) => (
+                <View
+                  key={order.id}
+                  style={[
+                    { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 16 },
+                    index !== orders.slice(0, 5).length - 1 && { borderBottomWidth: 1, borderBottomColor: 'rgba(39, 39, 42, 0.5)' }
+                  ]}
                 >
-                  <View className="flex-1">
-                    <Text className="text-zinc-100 font-bold text-lg">#{order.id.slice(-4).toUpperCase()}</Text>
-                    <Text className="text-zinc-500 text-sm">{order.user?.name || 'Customer'} • ₹{order.totalAmount}</Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ color: colors.text, fontWeight: 'bold', fontSize: 18 }}>#{order.id.slice(-4).toUpperCase()}</Text>
+                    <Text style={{ color: colors.textSecondary, fontSize: 14 }}>{order.user?.name || 'Customer'} • ₹{order.totalAmount}</Text>
                   </View>
-                  <View className={`px-3 py-1 rounded-xl items-center justify-center self-start ${
-                    order.status === 'PENDING' ? 'bg-amber-500/10' : 
-                    order.status === 'ACCEPTED' ? 'bg-blue-500/10' :
-                    'bg-emerald-500/10'
-                  }`}>
-                    <Text className={`font-bold text-[10px] ${
-                      order.status === 'PENDING' ? 'text-amber-500' : 
-                      order.status === 'ACCEPTED' ? 'text-blue-500' :
-                      'text-emerald-500'
-                    }`}>{order.status}</Text>
+                  <View style={[
+                    { paddingHorizontal: 12, paddingVertical: 4, borderRadius: 12, alignItems: 'center', justifyContent: 'center', alignSelf: 'flex-start' },
+                    order.status === 'PENDING' ? { backgroundColor: 'rgba(245, 158, 11, 0.1)' } :
+                    order.status === 'ACCEPTED' ? { backgroundColor: 'rgba(59, 130, 246, 0.1)' } :
+                    { backgroundColor: 'rgba(16, 185, 129, 0.1)' }
+                  ]}>
+                    <Text style={[
+                      { fontWeight: 'bold', fontSize: 10 },
+                      order.status === 'PENDING' ? { color: colors.primary } :
+                      order.status === 'ACCEPTED' ? { color: '#3b82f6' } :
+                      { color: colors.success }
+                    ]}>{order.status}</Text>
                   </View>
                 </View>
               ))}
               {orders.length === 0 && (
-                <Text className="text-zinc-500 text-center py-4">No recent activity</Text>
+                <Text style={{ color: colors.textSecondary, textAlign: 'center', paddingVertical: 16 }}>No recent activity</Text>
               )}
             </View>
           </>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, ActivityIndicator, RefreshControl, Alert, Modal, TextInput } from 'react-native';
 import { Plus, Edit2, Trash2, X } from 'lucide-react-native';
 import { useSweetsStore, Sweet } from '../../store/useSweetsStore';
+import { commonStyles, colors } from '../../utils/styles';
 
 export default function InventoryScreen() {
   const { sweets, loading, fetchSweets, deleteSweet, addSweet, updateSweet } = useSweetsStore();
@@ -101,58 +102,58 @@ export default function InventoryScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-zinc-950">
-      <ScrollView 
-        className="flex-1 px-6 pt-6 mb-20"
+    <SafeAreaView style={commonStyles.container}>
+      <ScrollView
+        style={{ flex: 1, paddingHorizontal: 24, paddingTop: 24, marginBottom: 80 }}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#f59e0b" />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />
         }
       >
-        <View className="flex-row justify-between items-center mb-2">
-          <Text className="text-3xl font-extrabold text-amber-500">Inventory</Text>
-          <TouchableOpacity 
-            className="bg-amber-500 w-10 h-10 rounded-full items-center justify-center shadow-md shadow-amber-500/20"
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+          <Text style={{ fontSize: 30, fontWeight: '800', color: colors.primary }}>Inventory</Text>
+          <TouchableOpacity
+            style={{ backgroundColor: colors.primary, width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', shadowColor: colors.primary, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 3.84 }}
             activeOpacity={0.7}
             onPress={() => handleOpenModal()}
           >
-            <Plus color="#18181b" size={24} strokeWidth={3} />
+            <Plus color={colors.background} size={24} strokeWidth={3} />
           </TouchableOpacity>
         </View>
-        <Text className="text-zinc-400 mb-8">Manage your sweets catalog</Text>
+        <Text style={{ color: colors.textSecondary, marginBottom: 32 }}>Manage your sweets catalog</Text>
 
         {loading && sweets.length === 0 ? (
-          <ActivityIndicator color="#f59e0b" size="large" className="mt-10" />
+          <ActivityIndicator color={colors.primary} size="large" style={{ marginTop: 40 }} />
         ) : (
-          <View className="space-y-4 pb-10">
+          <View style={{ paddingBottom: 40 }}>
             {sweets.map((sweet) => (
-              <View key={sweet.id} className="bg-zinc-900 border border-zinc-800 rounded-3xl p-4 flex-row justify-between items-center shadow-lg mb-4">
-                <View className="flex-row items-center flex-1">
-                  <Image 
-                    source={{ uri: sweet.imageUrl }} 
-                    className="w-16 h-16 rounded-2xl bg-zinc-800"
+              <View key={sweet.id} style={[commonStyles.card, { borderRadius: 24, padding: 16, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 5, marginBottom: 16 }]}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+                  <Image
+                    source={{ uri: sweet.imageUrl }}
+                    style={{ width: 64, height: 64, borderRadius: 16, backgroundColor: colors.border }}
                   />
-                  <View className="ml-4 flex-1">
-                    <Text className="text-lg font-bold text-zinc-100">{sweet.name}</Text>
-                    <Text className="text-amber-500 font-bold mb-1">₹{sweet.price} / kg</Text>
-                    <View className="flex-row items-center">
-                      <View className={`w-2 h-2 rounded-full mr-2 ${sweet.isAvailable ? 'bg-emerald-500' : 'bg-red-500'}`} />
-                      <Text className="text-zinc-400 text-xs">{sweet.isAvailable ? `In Stock (${sweet.stock})` : 'Out of Stock'}</Text>
+                  <View style={{ marginLeft: 16, flex: 1 }}>
+                    <Text style={{ fontSize: 18, fontWeight: 'bold', color: colors.text }}>{sweet.name}</Text>
+                    <Text style={{ color: colors.primary, fontWeight: 'bold', marginBottom: 4 }}>₹{sweet.price} / kg</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                      <View style={{ width: 8, height: 8, borderRadius: 4, marginRight: 8, backgroundColor: sweet.isAvailable ? colors.success : colors.error }} />
+                      <Text style={{ color: colors.textSecondary, fontSize: 12 }}>{sweet.isAvailable ? `In Stock (${sweet.stock})` : 'Out of Stock'}</Text>
                     </View>
                   </View>
                 </View>
 
-                <View className="flex-row space-x-2 ml-2">
-                  <TouchableOpacity 
-                    className="bg-zinc-800 p-2 rounded-xl"
+                <View style={{ flexDirection: 'row', marginLeft: 8 }}>
+                  <TouchableOpacity
+                    style={{ backgroundColor: colors.border, padding: 8, borderRadius: 12, marginRight: 8 }}
                     onPress={() => handleOpenModal(sweet)}
                   >
-                    <Edit2 color="#a1a1aa" size={18} />
+                    <Edit2 color={colors.textSecondary} size={18} />
                   </TouchableOpacity>
-                  <TouchableOpacity 
-                    className="bg-zinc-800 p-2 rounded-xl"
+                  <TouchableOpacity
+                    style={{ backgroundColor: colors.border, padding: 8, borderRadius: 12 }}
                     onPress={() => handleDelete(sweet.id, sweet.name)}
                   >
-                    <Trash2 color="#ef4444" size={18} />
+                    <Trash2 color={colors.error} size={18} />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -168,45 +169,45 @@ export default function InventoryScreen() {
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
-        <View className="flex-1 justify-end bg-black/60">
-          <View className="bg-zinc-900 rounded-t-[40px] p-8 pb-12 border-t border-zinc-800">
-            <View className="flex-row justify-between items-center mb-6">
-              <Text className="text-2xl font-black text-white">{editingSweet ? 'Edit Sweet' : 'Add New Sweet'}</Text>
-              <TouchableOpacity onPress={() => setModalVisible(false)} className="bg-zinc-800 p-2 rounded-full">
-                <X color="#a1a1aa" size={20} />
+        <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0, 0, 0, 0.6)' }}>
+          <View style={{ backgroundColor: colors.surface, borderTopLeftRadius: 40, borderTopRightRadius: 40, padding: 32, paddingBottom: 48, borderTopWidth: 1, borderTopColor: colors.border }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+              <Text style={{ fontSize: 24, fontWeight: '900', color: colors.text }}>{editingSweet ? 'Edit Sweet' : 'Add New Sweet'}</Text>
+              <TouchableOpacity onPress={() => setModalVisible(false)} style={{ backgroundColor: colors.border, padding: 8, borderRadius: 999 }}>
+                <X color={colors.textSecondary} size={20} />
               </TouchableOpacity>
             </View>
 
-            <ScrollView showsVerticalScrollIndicator={false} className="space-y-5">
-              <View>
-                <Text className="text-zinc-500 font-bold mb-2 ml-1 text-xs uppercase tracking-widest">Name</Text>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <View style={{ marginBottom: 20 }}>
+                <Text style={{ color: colors.textSecondary, fontWeight: 'bold', marginBottom: 8, marginLeft: 4, fontSize: 12, textTransform: 'uppercase', letterSpacing: 2 }}>Name</Text>
                 <TextInput
-                  className="bg-zinc-950 border border-zinc-800 text-white p-4 rounded-2xl mb-4"
+                  style={[commonStyles.input, { backgroundColor: colors.background, padding: 16, borderRadius: 16, marginBottom: 16 }]}
                   placeholder="e.g. Rasmalai"
-                  placeholderTextColor="#3f3f46"
+                  placeholderTextColor={colors.border}
                   value={form.name}
                   onChangeText={(text) => setForm({...form, name: text})}
                 />
               </View>
 
-              <View className="flex-row justify-between mb-4">
-                <View className="w-[48%]">
-                  <Text className="text-zinc-500 font-bold mb-2 ml-1 text-xs uppercase tracking-widest">Price (₹)</Text>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16 }}>
+                <View style={{ width: '48%' }}>
+                  <Text style={{ color: colors.textSecondary, fontWeight: 'bold', marginBottom: 8, marginLeft: 4, fontSize: 12, textTransform: 'uppercase', letterSpacing: 2 }}>Price (₹)</Text>
                   <TextInput
-                    className="bg-zinc-950 border border-zinc-800 text-white p-4 rounded-2xl"
+                    style={[commonStyles.input, { backgroundColor: colors.background, padding: 16, borderRadius: 16 }]}
                     placeholder="500"
-                    placeholderTextColor="#3f3f46"
+                    placeholderTextColor={colors.border}
                     keyboardType="numeric"
                     value={form.price}
                     onChangeText={(text) => setForm({...form, price: text})}
                   />
                 </View>
-                <View className="w-[48%]">
-                  <Text className="text-zinc-500 font-bold mb-2 ml-1 text-xs uppercase tracking-widest">Stock (kg)</Text>
+                <View style={{ width: '48%' }}>
+                  <Text style={{ color: colors.textSecondary, fontWeight: 'bold', marginBottom: 8, marginLeft: 4, fontSize: 12, textTransform: 'uppercase', letterSpacing: 2 }}>Stock (kg)</Text>
                   <TextInput
-                    className="bg-zinc-950 border border-zinc-800 text-white p-4 rounded-2xl"
+                    style={[commonStyles.input, { backgroundColor: colors.background, padding: 16, borderRadius: 16 }]}
                     placeholder="50"
-                    placeholderTextColor="#3f3f46"
+                    placeholderTextColor={colors.border}
                     keyboardType="numeric"
                     value={form.stock}
                     onChangeText={(text) => setForm({...form, stock: text})}
@@ -214,12 +215,12 @@ export default function InventoryScreen() {
                 </View>
               </View>
 
-              <View>
-                <Text className="text-zinc-500 font-bold mb-2 ml-1 text-xs uppercase tracking-widest">Description</Text>
+              <View style={{ marginBottom: 16 }}>
+                <Text style={{ color: colors.textSecondary, fontWeight: 'bold', marginBottom: 8, marginLeft: 4, fontSize: 12, textTransform: 'uppercase', letterSpacing: 2 }}>Description</Text>
                 <TextInput
-                  className="bg-zinc-950 border border-zinc-800 text-white p-4 rounded-2xl mb-4"
+                  style={[commonStyles.input, { backgroundColor: colors.background, padding: 16, borderRadius: 16, marginBottom: 16 }]}
                   placeholder="Tell us about this sweet..."
-                  placeholderTextColor="#3f3f46"
+                  placeholderTextColor={colors.border}
                   multiline
                   numberOfLines={3}
                   value={form.description}
@@ -227,22 +228,25 @@ export default function InventoryScreen() {
                 />
               </View>
 
-              <View>
-                <Text className="text-zinc-500 font-bold mb-2 ml-1 text-xs uppercase tracking-widest">Image URL</Text>
+              <View style={{ marginBottom: 32 }}>
+                <Text style={{ color: colors.textSecondary, fontWeight: 'bold', marginBottom: 8, marginLeft: 4, fontSize: 12, textTransform: 'uppercase', letterSpacing: 2 }}>Image URL</Text>
                 <TextInput
-                  className="bg-zinc-950 border border-zinc-800 text-white p-4 rounded-2xl mb-8"
+                  style={[commonStyles.input, { backgroundColor: colors.background, padding: 16, borderRadius: 16 }]}
                   placeholder="https://image-url.com/sweet.jpg"
-                  placeholderTextColor="#3f3f46"
+                  placeholderTextColor={colors.border}
                   value={form.imageUrl}
                   onChangeText={(text) => setForm({...form, imageUrl: text})}
                 />
               </View>
 
-              <TouchableOpacity 
-                className="w-full bg-amber-500 py-5 rounded-2xl items-center shadow-xl shadow-amber-500/20"
+              <TouchableOpacity
+                style={[
+                  commonStyles.button,
+                  { width: '100%', paddingVertical: 20, borderRadius: 16, shadowColor: colors.primary, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.2, shadowRadius: 3.84 }
+                ]}
                 onPress={handleSubmit}
               >
-                <Text className="text-zinc-900 font-black text-lg uppercase tracking-widest">
+                <Text style={{ color: colors.background, fontWeight: '900', fontSize: 18, textTransform: 'uppercase', letterSpacing: 2 }}>
                   {editingSweet ? 'Save Changes' : 'Add Sweet'}
                 </Text>
               </TouchableOpacity>
